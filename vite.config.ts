@@ -28,7 +28,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   const viteEnv = wrapperEnv(env);
 
   const { VITE_PORT, VITE_PUBLIC_PATH, VITE_PROXY, VITE_DROP_CONSOLE } = viteEnv;
-
   const isBuild = command === 'build';
 
   return {
@@ -53,10 +52,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       ],
     },
     server: {
-      https: true,
+      // https: true,
       // Listening on all local IPs
       host: true,
       port: VITE_PORT,
+      https: false,
       // Load proxy configuration from .env
       proxy: createProxy(VITE_PROXY),
     },
