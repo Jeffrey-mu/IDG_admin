@@ -79,7 +79,66 @@ const authRoute = {
   },
   children: [backRoute],
 };
-
+const businessRoute = {
+  path: '/business',
+  name: 'business',
+  component: 'LAYOUT',
+  redirect: '/business/data/index',
+  meta: {
+    icon: 'carbon:user-role',
+    title: 'routes.demo.business.permission',
+  },
+  children: [
+    {
+      path: '/data',
+      name: 'BackAuthPage',
+      component: '/business/data/index',
+      meta: {
+        title: 'routes.business.data',
+      },
+    },
+    {
+      path: '/website',
+      name: 'BackAuthPage',
+      component: '/business/website/index',
+      meta: {
+        title: 'routes.business.website',
+      },
+    },
+    {
+      path: '/boutiqueStation',
+      name: 'BackAuthPage',
+      component: '/business/boutiqueStation/index',
+      meta: {
+        title: 'routes.business.boutiqueStation',
+      },
+    },
+    {
+      path: '/shellingModule',
+      name: 'BackAuthPage',
+      component: '/business/shellingModule/index',
+      meta: {
+        title: 'routes.business.shellingModule',
+      },
+    },
+    {
+      path: '/template',
+      name: 'BackAuthPage',
+      component: '/business/template/index',
+      meta: {
+        title: 'routes.business.template',
+      },
+    },
+    {
+      path: '/violation',
+      name: 'BackAuthPage',
+      component: '/business/violation/index',
+      meta: {
+        title: 'routes.business.violation',
+      },
+    },
+  ],
+};
 const levelRoute = {
   path: '/level',
   name: 'Level',
@@ -254,11 +313,11 @@ export default [
       switch (id) {
         case '1':
           dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[0].path;
-          menu = [dashboardRoute, authRoute, levelRoute, sysRoute, linkRoute];
+          menu = [dashboardRoute, businessRoute, authRoute, levelRoute, sysRoute, linkRoute];
           break;
         case '2':
           dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[1].path;
-          menu = [dashboardRoute, authRoute, levelRoute, linkRoute];
+          menu = [dashboardRoute, businessRoute, authRoute, levelRoute, linkRoute];
           break;
         default:
           menu = [];
