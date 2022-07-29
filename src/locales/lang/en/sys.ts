@@ -71,8 +71,8 @@ export default {
     signUpFormTitle: 'Sign up',
     forgetFormTitle: 'Reset password',
 
-    signInTitle: 'Backstage management system',
-    signInDesc: 'Enter your personal details and get started!',
+    signInTitle: 'IDGTN Automation platform',
+    signInDesc: '',
     policy: 'I agree to the xxx Privacy Policy',
     scanSign: `scanning the code to complete the login`,
 
