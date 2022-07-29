@@ -55,7 +55,7 @@ const transform: AxiosTransform = {
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
-      return result;
+      return result ? result : data;
     }
 
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
@@ -88,14 +88,16 @@ const transform: AxiosTransform = {
   // 请求之前处理config
   beforeRequestHook: (config, options) => {
     const { apiUrl, joinPrefix, joinParamsToUrl, formatDate, joinTime = true, urlPrefix } = options;
-
-    if (joinPrefix) {
-      config.url = `${urlPrefix}${config.url}`;
+    // 开发环境测试
+    if (!config.url?.startsWith('/api')) {
+      if (joinPrefix) {
+        config.url = `${urlPrefix}${config.url}`;
+      }
+      if (apiUrl && isString(apiUrl)) {
+        config.url = `${apiUrl}${config.url}`;
+      }
     }
 
-    if (apiUrl && isString(apiUrl)) {
-      config.url = `${apiUrl}${config.url}`;
-    }
     const params = config.params || {};
     const data = config.data || false;
     formatDate && data && !isString(data) && formatRequestDate(data);
@@ -111,7 +113,11 @@ const transform: AxiosTransform = {
     } else {
       if (!isString(params)) {
         formatDate && formatRequestDate(params);
-        if (Reflect.has(config, 'data') && config.data && (Object.keys(config.data).length > 0 || config.data instanceof FormData)) {
+        if (
+          Reflect.has(config, 'data') &&
+          config.data &&
+          (Object.keys(config.data).length > 0 || config.data instanceof FormData)
+        ) {
           config.data = data;
           config.params = params;
         } else {
