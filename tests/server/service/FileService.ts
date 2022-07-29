@@ -27,13 +27,13 @@ export default class UserService {
         url = url.replace(/,$/gi, '');
         ctx.body = {
           url: url,
-          code: 0,
+          code: 200,
           message: 'upload Success!',
         };
       } else {
         ctx.body = {
           url: uploadUrl + `/${files.name}`,
-          code: 0,
+          code: 200,
           message: 'upload Success!',
         };
       }
