@@ -44,11 +44,11 @@
   import { defineComponent, reactive } from 'vue';
   import { useUserStore } from '/@/store/modules/user';
   import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
-  import { getDataList } from '/@/api/business/data';
+  import { getDataList, dataDelete } from '/@/api/business/data';
 
   import { useDrawer } from '/@/components/Drawer';
   import DataDrawer from './DataDrawer.vue';
-
+  import { useMessage } from '/@/hooks/web/useMessage';
   import { columns, searchFormSchema } from './data';
 
   export default defineComponent({
@@ -56,6 +56,7 @@
     components: { BasicTable, DataDrawer, TableAction, TableImg },
     setup() {
       const userState = useUserStore();
+      const { createMessage } = useMessage();
       const searchInfo = reactive<Recordable>({});
       searchInfo.manager_name = userState.userInfo?.username;
       const [registerDrawer, { openDrawer }] = useDrawer();
@@ -98,8 +99,11 @@
         });
       }
 
-      function handleDelete(record: Recordable) {
-        console.log(record);
+      function handleDelete({ id }: Recordable) {
+        dataDelete({ id: id }).then((_) => {
+          reload();
+          createMessage.success('删除成功');
+        });
       }
 
       function handleSuccess() {
