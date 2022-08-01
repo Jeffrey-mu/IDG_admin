@@ -27,11 +27,15 @@ export interface dataItem {
   user_name: null;
 }
 export interface getDataListModel<T> {
-  code: number;
-  data: T[];
-  pageTotal: number;
+  items: T[];
+  total?: number;
+}
+export interface optionItem {
+  id: number;
+  name: string;
 }
 /**
  * @description: Get menu return value
  */
 export type getDataListResultModel = getDataListModel<dataItem>;
+export type getOptionItemResultModel = getDataListModel<optionItem>;
