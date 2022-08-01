@@ -7,8 +7,68 @@ import {
   getDataTypeList,
   getDataTwoTypeList,
   getSiteDataType,
+  getGameTypeList,
 } from '/@/api/business/data';
 import { useBusinessStore } from '/@/store/modules/business';
+const fieldNames = {
+  label: 'name',
+  key: 'id',
+  value: 'id',
+};
+// 根据类型显示
+function ifShowFormSchema(boolean: boolean): FormSchema[] {
+  return [
+    {
+      field: 'game_type_id',
+      rules: [{ required: true }],
+      label: '游戏类型',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getGameTypeList,
+        resultField: 'items',
+        labelField: 'name',
+        valueField: 'id',
+      },
+      ifShow: boolean,
+      colProps: { span: 8 },
+    },
+    {
+      field: 'dimensions',
+      rules: [{ required: true }],
+      label: '尺寸',
+      component: 'Input',
+      ifShow: boolean,
+      colProps: { span: 8 },
+    },
+    {
+      field: 'data_one_type_id',
+      label: '二级数据',
+      required: true,
+      ifShow: !boolean,
+      component: 'Select',
+      componentProps: {
+        options: [],
+      },
+      colProps: { span: 8 },
+    },
+    {
+      field: 'user_name',
+      rules: [{ required: true }],
+      label: '姓名',
+      ifShow: !boolean,
+      component: 'Input',
+      colProps: { span: 8 },
+    },
+    {
+      label: '文章id',
+      rules: [{ required: true }],
+      field: 'article_id',
+      ifShow: !boolean,
+      component: 'Input',
+      colProps: { span: 8 },
+    },
+  ];
+}
 const useBusiness = useBusinessStore();
 
 export const columns: BasicColumn[] = [
@@ -111,6 +171,63 @@ export const formSchema: FormSchema[] = [
     componentProps: ({ formModel, formActionType }) => {
       return {
         options: useBusiness.getBusinessOptions('data_type_id'),
+        // ...fieldNames,
+        fieldNames,
+        onChange: async (e: any) => {
+          // console.log(e)
+          let options: any = [];
+          if (e === undefined) {
+            options = [];
+          } else {
+            const { items } = await getDataTwoTypeList({ dataId: e });
+            const siteDataType = await getBoutiqueStation({ dataId: e });
+            options[0] = items;
+            options[1] = siteDataType;
+          }
+
+          formModel.data_one_type_id = undefined; //  reset city value
+          const { updateSchema } = formActionType;
+          if (e === 2) {
+            updateSchema(ifShowFormSchema(true));
+          } else {
+            updateSchema([
+              ...ifShowFormSchema(false),
+              {
+                field: 'data_one_type_id',
+                componentProps: {
+                  options: options[0],
+                  fieldNames,
+                },
+              },
+              {
+                field: 'site_data_id',
+                componentProps: {
+                  options: options[1],
+                },
+              },
+            ]);
+          }
+        },
+      };
+    },
+    colProps: { span: 8 },
+  },
+  ...ifShowFormSchema(false),
+  {
+    label: '时间',
+    rules: [{ required: true }],
+    field: 'time',
+    component: 'DatePicker',
+    colProps: { span: 8 },
+  },
+  {
+    label: '站点名称',
+    rules: [{ required: true }],
+    field: 'site_data_id',
+    component: 'Select',
+    componentProps: ({ formModel, formActionType }) => {
+      return {
+        options: [],
         fieldNames: {
           label: 'name',
           key: 'id',
@@ -122,76 +239,32 @@ export const formSchema: FormSchema[] = [
           if (e === undefined) {
             options = [];
           } else {
-            const { items } = await getDataTwoTypeList({ dataId: e });
+            const { items } = await getSiteDataType({ site_data_type: e });
             options = items;
           }
-
           formModel.data_one_type_id = undefined; //  reset city value
           const { updateSchema } = formActionType;
-          updateSchema({
-            field: 'data_one_type_id',
-            componentProps: {
-              options,
-              fieldNames: {
-                label: 'name',
-                key: 'id',
-                value: 'id',
+          updateSchema([
+            {
+              field: 'site_data_type_id',
+              componentProps: {
+                options,
               },
             },
-          });
+          ]);
         },
       };
     },
     colProps: { span: 8 },
   },
   {
-    field: 'data_one_type_id',
-    label: '二级数据',
-    required: true,
-    component: 'Select',
-    componentProps: {
-      options: [],
-    },
-    colProps: { span: 8 },
-  },
-  {
-    field: 'user_name',
-    rules: [{ required: true }],
-    label: '姓名',
-    component: 'Input',
-    colProps: { span: 8 },
-  },
-  {
-    label: '文章id',
-    rules: [{ required: true }],
-    field: 'article_id',
-    component: 'Input',
-    colProps: { span: 8 },
-  },
-  {
-    label: '时间',
-    rules: [{ required: true }],
-    field: 'time',
-    component: 'DatePicker',
-    colProps: { span: 8 },
-  },
-  {
-    label: '站点名',
-    rules: [{ required: true }],
-    field: 'menu',
-    component: 'Input',
-    colProps: { span: 8 },
-  },
-  {
     label: '站内数据类型',
     rules: [{ required: false }],
     field: 'site_data_type_id',
-    component: 'ApiSelect',
+    component: 'Select',
     componentProps: {
-      api: getSiteDataType,
-      resultField: 'items',
-      labelField: 'name',
-      valueField: 'id',
+      options: [],
+      fieldNames,
     },
     colProps: { span: 9 },
     labelWidth: '120px',

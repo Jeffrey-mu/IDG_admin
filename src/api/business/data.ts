@@ -10,6 +10,7 @@ enum Api {
   getDataTwoTypeList = '/api/dataTwoTypeList',
   getSiteDataType = '/api/siteDataType',
   dataDelete = '/api/dataDelete',
+  getGameTypeList = '/api/gameTypeList',
 }
 
 /**
@@ -22,8 +23,11 @@ export const getDataList = (params) => {
 /**
  * @description: Get boutiqueStation list based
  */
-export const getBoutiqueStation = async () => {
-  const data = await defHttp.post<getOptionItemResultModel>({ url: Api.getBoutiqueStation });
+export const getBoutiqueStation = async (params = {}) => {
+  const data = await defHttp.post<getOptionItemResultModel>({
+    url: Api.getBoutiqueStation,
+    data: params,
+  });
   useBusiness.setBusinessOptions('boutique_station_id', data.items);
   return data.items;
 };
@@ -44,12 +48,18 @@ export const getDataTwoTypeList = (params) => {
 /**
  * @description: Get getSiteDataType list based
  */
-export const getSiteDataType = () => {
-  return defHttp.get<getOptionItemResultModel>({ url: Api.getSiteDataType });
+export const getSiteDataType = (params) => {
+  return defHttp.get<getOptionItemResultModel>({ url: Api.getSiteDataType, params });
 };
 /**
  * @description: del info by id
  */
 export const dataDelete = (params) => {
   return defHttp.get<getOptionItemResultModel>({ url: Api.dataDelete, params });
+};
+/**
+ * @description: del info by id
+ */
+export const getGameTypeList = () => {
+  return defHttp.get<getOptionItemResultModel>({ url: Api.getGameTypeList });
 };
